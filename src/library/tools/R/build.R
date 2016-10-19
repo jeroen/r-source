@@ -136,6 +136,8 @@ get_exclude_patterns <- function()
             '                        "no" (default), "qpdf", "gs", "gs+qpdf", "both"',
             "  --compact-vignettes   same as --compact-vignettes=qpdf",
             "  --md5                 add MD5 sums",
+            "  --sign                sign with your default GPG key",
+            "  --sign=<keyid/email>  sign with a custom GPG key",
            "",
             "Report bugs at bugs.r-project.org .", sep = "\n")
     }
@@ -777,6 +779,7 @@ get_exclude_patterns <- function()
     vignettes <- TRUE
     manual <- TRUE  # Install the manual if Rds contain \Sexprs
     with_md5 <- FALSE
+    with_sig <- FALSE
 ##    INSTALL_opts <- character()
     pkgs <- character()
     options(showErrorCalls = FALSE, warn = 1)
@@ -850,10 +853,20 @@ get_exclude_patterns <- function()
             compact_vignettes <- "qpdf"
         } else if (a == "--md5") {
             with_md5 <- TRUE
+        } else if (a == "--sign") {
+            with_md5 <- TRUE
+            with_sig <- TRUE
+        } else if (substr(a, 1, 7) == "--sign=")  {
+            with_md5 <- TRUE
+            with_sig <- substr(a, 8, 1000)
         } else if (substr(a, 1, 1) == "-") {
             message("Warning: unknown option ", sQuote(a))
         } else pkgs <- c(pkgs, a)
         args <- args[-1L]
+    }
+
+    if(!identical(with_sig, FALSE) && !require('gpg')){
+        stop("The 'gpg' package must be installed to use --sign")
     }
 
     if(!compact_vignettes %in% c("no", "qpdf", "gs", "gs+qpdf", "both")) {
@@ -1054,6 +1067,11 @@ get_exclude_patterns <- function()
         if(with_md5) {
 	    messageLog(Log, "adding MD5 file")
             .installMD5sums(pkgname)
+            if(isTRUE(with_sig)){
+                writeLines(gpg::gpg_sign(file.path(pkgname, "MD5")), file.path(pkgname, "MD5.gpg"))
+            } else if(is.character(with_sig)){
+                writeLines(gpg::gpg_sign(file.path(pkgname, "MD5"), with_sig), file.path(pkgname, "MD5.gpg"))
+            }
         } else {
             ## remove any stale file
             unlink(file.path(pkgname, "MD5"))
