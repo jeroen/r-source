@@ -19,10 +19,10 @@
 if(.Platform$OS.type == "windows") {
     read_symbols_from_dll <- function(f, rarch)
     {
-        ## reasonable to assume this on the path
-        DLL_nm <- "objdump.exe"
-        if(!nzchar(Sys.which(DLL_nm))) {
-            warning("this requires 'objdump.exe' to be on the PATH")
+        ## lookup objdump.exe for appropriate arch
+        DLL_nm <- system2(R.home("bin/R"), c("CMD", "config", "OBJDUMP"), stdout = TRUE)
+        if(!file.exists(paste0(DLL_nm, ".exe"))) {
+            warning("failed to find 'objdump.exe'")
             return()
         }
         f <- file_path_as_absolute(f)
