@@ -54,6 +54,15 @@ typedef enum {
 #  include <cairo-ps.h>
 # endif
 
+/* As of version 1.15.10 Cairo requires all paths be in UTF-8
+ * See: https://cgit.freedesktop.org/cairo/commit/?id=84fc0ce91d1a57d20500f710abc0e17de82c67df
+ */
+#if defined(_WIN32) && (CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1,15,10))
+#define cairo_filepath(x) Rf_translateCharUTF8(Rf_mkChar(R_ExpandFileName(x)))
+#else
+#define cairo_filepath(x) R_ExpandFileName(x)
+#endif
+
 typedef struct {
     /* Graphics Parameters */
     /* Local device copy so that we can detect */
