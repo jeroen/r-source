@@ -133,7 +133,7 @@ if(FALSE) {
     on.exit(do_exit_on_error())
     WINDOWS <- .Platform$OS.type == "windows"
 
-    if (WINDOWS) MAKE <- "make"
+    if (WINDOWS) MAKE <- Sys.getenv("MAKE", "make")
     else MAKE <- Sys.getenv("MAKE") # FIXME shQuote, default?
     rarch <- Sys.getenv("R_ARCH") # unix only
     if (WINDOWS && nzchar(.Platform$r_arch))
