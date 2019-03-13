@@ -1078,7 +1078,7 @@ if(FALSE) {
                 if (file.exists("Makefile.win")) {
                     makefiles <- c("Makefile.win", makefiles)
                     message("  running 'src/Makefile.win' ...", domain = NA)
-                    res <- system(paste("make --no-print-directory",
+                    res <- system(paste(MAKE, "--no-print-directory",
                                         paste("-f", shQuote(makefiles), collapse = " ")))
                     if (res == 0L) shlib_install(instdir, rarch)
                     else has_error <- TRUE
