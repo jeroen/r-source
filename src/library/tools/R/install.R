@@ -2174,7 +2174,7 @@ if(FALSE) {
         Sys.setenv(R_HOME = rhome)
         SHLIB_EXT <- ".dll"
         SHLIB_LIBADD <- ""
-        MAKE <- "make"
+        MAKE <- Sys.getenv("MAKE", "make")
         ## Formerly for winshlib.mk to pick up Makeconf
         rarch <- Sys.getenv("R_ARCH", NA_character_)
         if(is.na(rarch)) {
