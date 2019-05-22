@@ -318,7 +318,7 @@ SEXP writeClipboard(SEXP text, SEXP sformat)
 		warning(_("unable to open the clipboard"));
 		GlobalFree(hglb);
 	    } else {
-		success = SetClipboardData(CF_TEXT, hglb) != 0;
+		success = SetClipboardData(format, hglb) != 0;
 		if(!success) {
 		    warning(_("unable to write to the clipboard"));
 		    GlobalFree(hglb);
