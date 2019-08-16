@@ -181,7 +181,7 @@ void attribute_hidden InitArithmetic()
 static double myfmod(double x1, double x2)
 {
     if (x2 == 0.0) return R_NaN;
-    double q = x1 / x2, tmp = x1 - floor(q) * x2;
+    double q = x1 / x2, tmp = (LDOUBLE)x1 - floor(q) * (LDOUBLE)x2;
     if(R_FINITE(q) && (fabs(q) > 1/R_AccuracyInfo.eps))
 	warning(_("probable complete loss of accuracy in modulus"));
     q = floor(tmp/x2);
